@@ -1,0 +1,157 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<locale.h>
+#include<string.h>
+#define TAM 100
+
+struct tipo_endereco
+{
+	char Cidade[30];
+	char Rua[30];
+	int Numero;
+	char Bairro[40];	
+};
+
+struct tipo_cadastro
+{
+	char Nome[30];
+	int Telefone;
+	tipo_endereco Endereco;
+};
+
+	// Variável Global
+	int i = 0;
+
+int main()
+{
+	setlocale(LC_ALL,"Portuguese");
+	struct tipo_cadastro Cadastro[TAM], aux;
+	int escolha;
+	
+	FILE *arquivo;
+	
+	while (escolha != 3)
+	{
+		printf("\n\n\n\t\t############# AGENDA DE CONTATOS ############");
+		printf("\n\t\t#                                           #");
+		printf("\n\t\t#  1 - Incluir                              #");
+		printf("\n\t\t#  2 - Pesquisar                            #");
+		printf("\n\t\t#  3 - Sair                                 #");
+		printf("\n\t\t#                                           #");
+		printf("\n\t\t#############################################");
+		printf("\n\t\tEscolha uma opção: ");
+		scanf("\n\t%d", &escolha);
+		system("cls");
+		
+		if (escolha == 1)
+		{
+			arquivo = fopen("arquivo.txt", "a");
+			if (arquivo == NULL)
+			{
+				printf("Erro na abertura\n");
+				system("pause");
+				exit(1);
+			}
+			fflush(stdin);
+			printf("Informe o nome: ");
+			gets(Cadastro[i].Nome);
+			fflush(stdin);
+			
+			fflush(stdin);
+			printf("Informe o telefone: ");
+			scanf("%d",&Cadastro[i].Telefone);
+			fflush(stdin);
+			
+			fflush(stdin);
+			printf("Endereço - Rua: ");
+			gets(Cadastro[i].Endereco.Rua);
+			fflush(stdin);
+			
+			fflush(stdin);
+			printf("Endereço - Número: ");
+			scanf("%d",&Cadastro[i].Endereco.Numero);
+			fflush(stdin);
+
+
+			fflush(stdin);
+			printf("Endereço - Bairro: ");
+			gets(Cadastro[i].Endereco.Bairro);
+			fflush(stdin);
+			
+			printf("Endereço - Cidade: ");
+			gets(Cadastro[i].Endereco.Cidade);
+			fflush(stdin);
+			
+			fwrite(&Cadastro, sizeof(struct tipo_cadastro), 1, arquivo);
+			
+			i++;
+			fflush(stdin);
+			system("pause");
+			system("cls");
+			fclose(arquivo);
+		}
+		if (escolha == 2)
+		{
+			arquivo = fopen("arquivo.txt", "r");
+			if (arquivo == NULL)
+			{
+				printf("Erro na abertura\n");
+				system("pause");
+				exit(1);
+			}
+			char procura[30];
+			int encontrei = 0;
+			fflush(stdin);
+			printf("\n\t\tPesquisar por nome: ");
+			gets(procura);
+			fflush(stdin);
+			
+				while(!feof(arquivo))
+				{
+				fread(&aux, sizeof( struct tipo_cadastro), 1, arquivo);
+				if (!feof(arquivo))
+					if(strcmp(procura, aux.Nome) == 0)
+						{
+							encontrei = 1;
+							printf("\n\n");
+							printf("\t\t###########################################\n");
+							printf("\t\tNome: %s\n", aux.Nome);								
+							printf("\t\tTelefone: %d\n", aux.Telefone);								
+							printf("\t\tEndereço - Rua: %s\n", aux.Endereco.Rua);
+							printf("\t\tEndereço - Número: %d\n", aux.Endereco.Numero);
+							printf("\t\tEndereço - Bairro: %s\n", aux.Endereco.Bairro);
+							printf("\t\tEndereço - Cidade: %s\n", aux.Endereco.Cidade);
+							printf("\t\t###########################################\n\n");
+							system("pause");
+							fclose(arquivo);
+							break;
+			  			}
+		  		}
+		  		if (!encontrei)
+				{
+					printf("\n\n\t\tNome ''%s'' não cadastrado no sistema\n\n", procura);
+				}
+				system("pause");
+				system("cls");
+				fclose(arquivo);
+		}
+		if (escolha != 1 && escolha != 2 && escolha != 3)
+		{
+			printf("\n\n");
+			printf("\t\t###########################################");
+			printf("\n\t\t|                                         |");
+			printf("\n\t\t| Por favor, escolha uma ''OPÇÃO VÁLIDA'' |\n");
+			printf("\t\t|                                         |\n");
+			printf("\t\t###########################################\n\n");
+			system("pause");
+			system("cls");
+		}
+	}
+	printf("\n\n\n");
+	printf("\t\t###########################################");
+	printf("\n\t\t|                                         |");
+	printf("\n\t\t|     PROGRAMA FINALIZADO COM SUCESSO     |\n");
+	printf("\t\t|                                         |\n");
+	printf("\t\t###########################################\n");
+}
