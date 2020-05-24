@@ -1,0 +1,246 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<locale.h>
+#include<string.h>
+#include<unistd.h>
+
+/*
+
+	GRUPO:  Luana Maiara Vieira Gomes, CCO5
+			Matheus Pires Silva, CCO5
+
+*/
+
+/*Estruturas para a manipulação de árvore*/
+struct Elemento{
+    //Todos os elementos da minha árvore;
+    //Se for uma árvore de alunos: nome, matricula, curso,...
+    int Valor;
+};
+
+struct Nodo{
+    Elemento Item;
+    Nodo *Esq, *Dir;
+};
+
+typedef Nodo *TArvore;
+
+
+//Inicializar a minha árvore
+void Inicializa(TArvore &p){
+    p = NULL;
+}
+
+/*Função para inserir um elemento na árvore*/
+void Insere(Elemento x, TArvore &p){
+    if (p == NULL){
+        p = (Nodo*) malloc(sizeof(Nodo));  //Aloca um nó na memória
+        (*p).Item = x;  //Insere um elemento dentro do nó alocado
+        (*p).Esq = NULL;    //define o ponteiro esquerda
+        (*p).Dir = NULL;    //define o ponteiro direita
+    }
+    else{
+        if (x.Valor < (*p).Item.Valor)
+            Insere(x, (*p).Esq);
+        else{
+            if (x.Valor > (*p).Item.Valor)
+                Insere(x, (*p).Dir);
+            else
+                printf("Elemento presente na árvore.\n");
+        }
+    }
+}
+
+//PRE-ORDEM
+void ImprimePreOrdem(TArvore p)
+{
+    if(p != NULL){
+        printf("%d | ", (*p).Item.Valor);
+        ImprimePreOrdem((*p).Esq);
+        ImprimePreOrdem((*p).Dir);
+    }
+}
+
+//IN-ORDEM
+void ImprimeInOrdem(TArvore p)
+{
+    if(p != NULL){
+        ImprimeInOrdem((*p).Esq);
+        printf("%d | ", (*p).Item.Valor);
+        ImprimeInOrdem((*p).Dir);
+    }
+}
+
+//POS-ORDEM
+void ImprimePosOrdem(TArvore p)
+{
+    if(p != NULL){
+        ImprimePosOrdem((*p).Esq);
+        ImprimePosOrdem((*p).Dir);
+        printf("%d | ", (*p).Item.Valor);
+    }
+}
+
+void Pesquisa(Elemento x, TArvore p){
+    if (p == NULL)  printf("Valor não foi encontrado.\n");
+    else if (x.Valor < (*p).Item.Valor)
+        Pesquisa(x, (*p).Esq);
+    else if (x.Valor > (*p).Item.Valor)
+        Pesquisa(x, (*p).Dir);
+    else
+        printf("Valor encontrado.\n");
+}
+
+void TrocaMaior(TArvore r, TArvore &q){
+    TArvore aux;
+    if ((*q).Dir == NULL){
+        (*r).Item.Valor = (*q).Item.Valor;
+        aux = q;
+        q = (*q).Esq;
+        free(aux);
+    }
+    else
+        TrocaMaior(r, (*q).Dir);
+}
+
+/*Retirar um elemento da árvore (NÓ folha ou NÓ com somente um filho*/
+void Retira(TArvore &p, Elemento x){
+    TArvore aux;
+    if (p == NULL) printf("Elemento não encontrado.\n");
+    else if (x.Valor < (*p).Item.Valor) //Procura elemento à ESQUERDA de p.
+        Retira((*p).Esq, x);
+    else if (x.Valor > (*p).Item.Valor) //Procura elemento à DIREITA de p.
+        Retira((*p).Dir, x);
+    else{   //Sempre que for remover um NÓ FOLHA ou um NÓ com SOMENTE UM FILHO entra aqui
+        if ((*p).Esq == NULL){  //Retirando NÓ sem subárvore a ESQUERDA.
+            aux = p;
+            p = (*p).Dir;
+            free(aux);
+        }
+        else if ((*p).Dir == NULL){ //Retirando NÓ sem subárvore a DIREITA.
+            aux = p;
+            p = (*p).Esq;
+            free(aux);
+        }
+        else{   //Elemento a ser removido possui 2 FILHOS
+            TrocaMaior(p, (*p).Esq);
+        }
+    }
+}
+
+int main()
+{
+	int escolha;
+	setlocale(LC_ALL,"Portuguese");
+	TArvore p;
+	int teste = 0;
+	Elemento x;
+	while(escolha != 8)
+	{
+		printf("\t\t###################### MENU ####################\n");
+		printf("\t\t# 1 - Inicializar                              #\n");
+		printf("\t\t# 2 - Inserir                                  #\n");
+		printf("\t\t# 3 - Pesquisar                                #\n");
+		printf("\t\t# 4 - Pré-Ordem                                #\n");
+		printf("\t\t# 5 - In-Ordem                                 #\n");
+		printf("\t\t# 6 - Pós-Ordem                                #\n");
+		printf("\t\t# 7 - Retirar                                  #\n");
+		printf("\t\t# 8 - Sair                                     #\n");
+		printf("\t\t################################################\n");
+		printf("\n\t\t\tEscolha uma opção do MENU: ");
+		
+		scanf("%d",&escolha);
+		system("cls");
+		
+		if(escolha == 1)
+		{
+			printf ("Você escolheu a opção ''1 - Inicializar''\n");
+		    Inicializa(p);  //Inicializa a árvore p
+		    teste = 1;
+		    system("pause");
+			system("cls");
+		}else{
+			if(escolha == 2 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''2 - Inserir''\n");
+				int qtd, i;
+				printf("Quantos valores deseja inserir: ");
+				scanf("%d", &qtd);
+				for(i = 0; i < qtd; i++)
+				{
+					printf("Digite um valor: ");
+					scanf("%d", &x);
+					Insere (x,p);
+				}
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 3 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''3 - Pesquisar''\n");
+				printf("Digite um valor: ");
+				scanf("%d", &x);
+				Pesquisa(x,p);
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 4 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''4 - Pré-Ordem''\n");
+				printf("\nPré-Ordem: ");
+				ImprimePreOrdem(p);
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 5 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''5 - In-Ordem''\n");
+				printf("\nIn-Ordem: ");
+	    		ImprimeInOrdem(p);
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 6 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''6 - Pós-Ordem''\n");
+				printf("Pós-Ordem: ");
+	    		ImprimePosOrdem(p);
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 7 && teste == 1)
+			{
+				printf ("Você escolheu a opção ''7 - Retirar''\n");
+				printf("Digite um valor: ");
+				scanf("%d", &x);
+				Retira(p,x);
+				system("pause");
+				system("cls");
+			}
+			else if(escolha == 8)
+			{
+				printf ("Você escolheu a opção ''8 - Sair''\n");
+				printf("\n\n\n");
+				printf("\t\t###########################################");
+				printf("\n\t\t|                                         |");
+				printf("\n\t\t|     PROGRAMA FINALIZADO COM SUCESSO     |\n");
+				printf("\t\t|                                         |\n");
+				printf("\t\t###########################################\n");
+			}else{
+				printf("\n\n");
+				printf("\t\t###########################################");
+				printf("\n\t\t|                                         |");
+				printf("\n\t\t|                                         |");
+				printf("\n\t\t| Por favor, escolha uma ''OPÇÃO VÁLIDA'' |\n");
+				printf("\t\t|                    OU                   |\n");
+				printf("\t\t|         ''INICIALIZE O PROGRAMA''       |\n");
+				printf("\t\t|                                         |\n");
+				printf("\t\t|                                         |\n");
+				printf("\t\t###########################################\n\n");
+				system("pause");
+				system("cls");
+			}	
+		}
+	}
+}
